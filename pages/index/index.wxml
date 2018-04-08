@@ -1,0 +1,54 @@
+<!--index.wxml-->
+<view class="container">
+    <view class="indexes-con">
+        <view class="indexes-item" wx:if="{{indexInfo}}" bindtap="bindNavToIndex" scroll-with-animation="true">
+            <text>{{indexInfo.indexfullname}}</text>
+            <text class="num">{{indexInfo.nowprice}}</text>
+        </view>
+        <view class="indexes-item" wx:if="{{indexInfo}}">
+            <picker bindchange="bindPickerChange" value="{{value}}" range="{{array}}">
+                <text>年线({{array[value]}})</text><view class="more-icon"></view>
+            </picker>
+            <text wx:if="{{value==0}}" class="num">{{indexInfo.now_ma_250}}</text>
+            <text wx:if="{{value==1}}" class="num">{{indexInfo.now_ma_120}}</text>
+            <text wx:if="{{value==2}}" class="num">{{indexInfo.now_ma_60}}</text>
+        </view>
+    </view>
+    <view class="loading-tips" wx:if="{{!indexesList}}">
+        图表绘制中...
+    </view>
+    <canvas
+        wx:if="{{indexInfo}}"
+        canvas-id="charts"
+    ></canvas>
+</view>
+<view class="update-info">
+    <text class="desc">最近250日交易日走势</text>
+    <text class="date">{{updateTime}}更新</text>
+</view>
+<scroll-view class="funds-list"
+    scroll-y
+    scroll-into-view="{{toView}}"
+    scroll-top="{{scrollTop}}"
+    wx:if="{{indexesList.length>0}}">
+    <view class="fund {{item.indexfullname==indexInfo.indexfullname?'chosen':''}}"
+        wx:for="{{indexesList}}"
+        wx:for-item="item"
+        data-fund="{{item}}"
+        bindtap="choseIndex"
+        id="item{{item.indexcode}}">
+        <text class="name" data-fund="{{item}}" bindtap="choseIndex">{{item.indexfullname}}</text>
+        <text class="index-num" wx:if="{{value==0}}" data-fund="{{item}}" bindtap="choseIndex">偏移{{item.diff_250}}%</text>
+        <text class="index-num" wx:if="{{value==1}}" data-fund="{{item}}" bindtap="choseIndex">偏移{{item.diff_120}}%</text>
+        <text class="index-num" wx:if="{{value==2}}" data-fund="{{item}}" bindtap="choseIndex">偏移{{item.diff_60}}%</text>
+    </view>
+</scroll-view>
+<view class="loading-tips" wx:if="{{!indexesList}}">
+    列表数据正在拼命加载...
+</view>
+<navigator
+    class="invest-btn"
+    url="/pages/guide/guide"
+    hover-class="none"
+    open-type="navigate">
+一键定投</navigator>
